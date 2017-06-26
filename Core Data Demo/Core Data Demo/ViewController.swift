@@ -19,9 +19,9 @@ class ViewController: UIViewController {
         let appdelegate = UIApplication.shared.delegate as! AppDelegate //points to appdelegate.swift file
         let context = appdelegate.persistentContainer.viewContext
         let newUser = NSEntityDescription.insertNewObject(forEntityName: "UserDetails", into: context)
-        newUser.setValue("Shivam", forKey: "username")
+        newUser.setValue("Shabana AAzmi", forKey: "username")
         newUser.setValue("password", forKey: "password")
-        newUser.setValue(12,forKey: "age")
+        newUser.setValue(11,forKey: "age")
         do{
             try context.save()
             print("Trial Succeeded")
@@ -47,7 +47,58 @@ class ViewController: UIViewController {
         catch{
             print("I have failed you for returning the request")
         }
+//        NSPredicate Added
         
+//        request.predicate = NSPredicate(format: "age < %d", 10)
+        request.predicate = NSPredicate(format: "username == %@", "Shabana")
+        do{
+            let resultSet = try context.fetch(request)
+            if resultSet.count > 0 {
+                for r in resultSet as! [NSManagedObject] {
+                    if let uname = r.value(forKey: "username") as? String {
+                        print("Previous Name is \(uname)")
+                        r.setValue("Shabana", forKey: "username") //Changing Values
+                        do{
+                            try context.save()
+                            print("saved!")
+                        }
+                        catch{
+                            print("Couldn't save")
+                        }
+                        print(r)
+                    }
+                }
+            }
+            else{
+                print("No Resukts")
+            }
+            print(resultSet)
+        }
+        catch{
+            print("I have failed you for returning the request")
+        }
+        
+        //NSPredicate Deleting the searched results
+        do{
+            let resultSet = try context.fetch(request)
+            if resultSet.count > 0 {
+                for r in resultSet as! [NSManagedObject]{
+                    if let uname = r.value(forKey: "username") as? String{
+                        print("following data is to be deleted \(uname)")
+                        context.delete(r)
+                        do {
+                            try context.save()
+                        }
+                        catch{
+                            print("cannot Save")
+                        }
+                    }
+                }
+            }
+        }
+        catch{
+            print("Cannot fetch!")
+        }
     }
 
     override func didReceiveMemoryWarning() {
