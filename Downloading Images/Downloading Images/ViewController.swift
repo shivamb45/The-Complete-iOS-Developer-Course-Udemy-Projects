@@ -28,6 +28,8 @@ class ViewController: UIViewController {
 //                print("image setted") 
 //            }
 //        }
+        
+        //code to fetch and save image to documents directory
         let task = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) in
             if error != nil {
                                 print("Error ")
@@ -36,10 +38,24 @@ class ViewController: UIViewController {
                             else {
                                 let img = UIImage(data: data!)
                                 self.webImage.image = img
-                                print("image setted") 
+                                print("image setted")
+                                let documentPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+                print(documentPath)
+                let savePath = documentPath[0] as! String + "/fetchImage.jpg"
+                do{
+                try UIImageJPEGRepresentation(img!, 1)?.write(to: URL(fileURLWithPath: savePath))
+                    print("Image Saved")
+                }
+                catch{
+                    print("Cannot save Image")
+                }
                             }})
         task.resume()
         
+        //code to restore the Image from saved location
+//        let originalPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//        let restoreImgPath = originalPath[0] as! String + "/fetchImage.jpg"
+//        webImage.image = UIImage(contentsOfFile: restoreImgPath)
     }
 
     override func didReceiveMemoryWarning() {
